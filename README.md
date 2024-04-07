@@ -53,6 +53,13 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Dependencies
+- MongoDB: MongoDB is a NoSQL database used to store and manage data.
+
+## Installation
+1. Install MongoDB on your system. You can download MongoDB from the official website: [MongoDB Download](https://www.mongodb.com/try/download/community)
+2. Follow the installation instructions provided for your operating system.
+3. Make sure MongoDB is running before you start using the application.
 
 
 ## Test
