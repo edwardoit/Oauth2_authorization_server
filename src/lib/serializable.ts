@@ -1,4 +1,6 @@
-export type Serialized<T> = T extends {}
+interface vest {}
+
+export type Serialized<T> = T extends vest
   ? T extends { toJSON(): infer R }
     ? { [k in keyof R]: Serialized<R[k]> }
     : { [k in keyof T]: Serialized<T[k]> }

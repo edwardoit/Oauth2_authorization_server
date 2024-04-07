@@ -24,7 +24,15 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **OAuth 2.0 Implementation**: Utilizes the OAuth 2.0 protocol for secure authentication - grant type - authorization code.
+- **Nest.js Framework**: Built on top of Nest.js, a progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+- **Customizable**: Easily customizable to fit various authentication requirements.
+- **Security**: Implements industry-standard security measures to protect user data and credentials.
+- **Scalable**: Designed to be scalable for handling authentication requests from multiple clients.
+
+
+## Access API Endpoints:
+Once the server is running, you can access the API endpoints as per your OAuth 2.0 flow (e.g., `/createUser`, `/auth`, `/authorization`, `/verifyjwt`).
 
 ## Installation
 
@@ -45,6 +53,8 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+
+
 ## Test
 
 ```bash
@@ -58,15 +68,11 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+## Features
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+
 
 ## License
 

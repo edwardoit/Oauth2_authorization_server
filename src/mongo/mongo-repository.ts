@@ -46,7 +46,7 @@ export abstract class MongoRepository<T, ID> extends Repository<T, ID> {
 
   public async update(id: ID, entity: T): Promise<void> {
     const res = await this.collection.updateOne(
-      { _id: id },
+      { _id: id == undefined ? undefined : id },
       { $set: this.encode(id, entity) },
     );
     if (res.matchedCount === 0) {
@@ -56,7 +56,7 @@ export abstract class MongoRepository<T, ID> extends Repository<T, ID> {
 
   public async upsert(id: ID, entity: T): Promise<void> {
     const res = await this.collection.updateOne(
-      { _id: id },
+      { _id: id == undefined ? undefined : id },
       { $set: this.encode(id, entity) },
       { upsert: true },
     );
@@ -66,11 +66,13 @@ export abstract class MongoRepository<T, ID> extends Repository<T, ID> {
   }
 
   public async delete(id: ID): Promise<void> {
-    await this.collection.deleteOne({ _id: id });
+    await this.collection.deleteOne({ _id: id == undefined ? undefined : id });
   }
 
   public async findById(id: ID): Promise<T | null> {
-    const res = await this.collection.findOne({ _id: id });
+    const res = await this.collection.findOne({
+      _id: id == undefined ? undefined : id,
+    });
     if (res == null) return null;
 
     return this.decode(this._findOutput(res));

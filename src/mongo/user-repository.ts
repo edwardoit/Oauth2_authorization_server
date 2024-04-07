@@ -1,15 +1,12 @@
-import {
-  MongoRepository,
-  MongoRepositoryDocument,
-} from '../mongo/mongo-repository';
-import { IOUserData, Iuser } from './type/generics-interface';
+import { MongoRepository, MongoRepositoryDocument } from './mongo-repository';
+import { IOUserData, Iuser } from '../lib/type/generics-interface';
 import {
   Collection,
   DeleteResult,
   InsertOneResult,
   MongoClient,
 } from 'mongodb';
-import { serialize } from './serializable';
+import { serialize } from '../lib/serializable';
 
 export type UserCaster = Iuser;
 
@@ -19,35 +16,33 @@ export type UserEntitiesRepositoryDocument = MongoRepositoryDocument<
 >;
 
 export class UserRepository extends MongoRepository<UserCaster, string> {
-  private url = 'mongodb://localhost:27017';
-  private client: MongoClient = new MongoClient(this.url);
   public constructor(
     coll: Collection<MongoRepositoryDocument<UserCaster, string>>,
   ) {
     super(coll);
   }
-  protected async decode(
+  protected decode(
     enc: MongoRepositoryDocument<UserCaster, string>,
-  ): Promise<UserCaster> {
-    return await IOUserData.validate(enc);
+  ): UserCaster {
+    return IOUserData.validateSync(enc);
   }
 
   protected encode(
     _id: string,
     dec: UserCaster,
   ): MongoRepositoryDocument<UserCaster, string> {
-    return serialize({ _id: dec.username, ...dec });
+    return serialize(dec);
   }
 
-  public async deleteMerchant(username: string): Promise<DeleteResult> {
+  public async deleteUser(username: string): Promise<DeleteResult> {
     return await this.collection.deleteOne({
-      _id: username,
+      username: username,
     });
   }
-  public async updateMerchant(user: UserCaster): Promise<void> {
+  public async updateUser(user: UserCaster): Promise<void> {
     await this.collection.updateOne(
       {
-        _id: user.username,
+        username: user.username,
       },
       {
         $set: {
@@ -69,21 +64,20 @@ export class UserRepository extends MongoRepository<UserCaster, string> {
 
   public async retriveOneuser(userID: string): Promise<UserCaster | null> {
     return await this.collection.findOne({
-      _id: userID,
+      username: userID,
     });
   }
 
   public async insertNewUser(user: UserCaster): Promise<InsertOneResult> {
-    return await this.collection.insertOne({
-      _id: user.username,
-      ...user,
-    });
+    return await this.collection.insertOne(user);
   }
 
-  public async instaceDB() {
-    await this.client.connect();
-    console.log('Connected successfully to server');
-    const db = this.client.db('entities');
-    const collection = db.collection('users');
+  static async instaceDB(): Promise<Collection<UserCaster>> {
+    const url = 'mongodb://localhost:27017';
+    const client: MongoClient = new MongoClient(url);
+    await client.connect();
+    console.log('Connected successfully to database instance');
+    const db = client.db('entities').collection<UserCaster>('users');
+    return db;
   }
 }
