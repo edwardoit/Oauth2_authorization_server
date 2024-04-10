@@ -103,8 +103,8 @@ export class AppService {
           used: false,
         });
       }
+      console.log("pre response");
       //successfully operation
-
       return {
         authorization_code: tmpAuthCode,
         status: HttpStatus.CREATED,

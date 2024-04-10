@@ -1,53 +1,43 @@
-import {
-  Body,
-  Controller,
-  Header,
-  HttpStatus,
-  Post,
-  Res,
-} from '@nestjs/common';
-import { AppService } from '../app.service';
-import {
-  CreateUserDto,
-  IAuthorization,
-  IPreLogin,
-  IverifyAccount,
-} from '../lib/type/generics-interface';
-import { Response } from 'express';
+import { Body, Controller, Header, HttpStatus, Post, Response } from "@nestjs/common";
+import { AppService } from "../app.service";
+import { CreateUserDto, IAuthorization, IPreLogin, IverifyAccount } from "../lib/type/generics-interface";
+import { Response as Res } from "express";
 
 @Controller()
 export class AuthorizationAppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('createUser')
+  @Header('Cache-Control', 'private')
   async createUser(
     @Body() userAccessData: CreateUserDto,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+    @Response() res: Res,
+  ): Promise<Res> {
     const result = await this.appService.setUser(userAccessData);
-    response.status(result).json({});
+    return res.status(result);
   }
 
   @Post('auth')
   @Header('Cache-Control', 'private')
   @Header('Pragma', 'No-cache')
-  async generateauthorizationcode(
+  async generateAuthorizationCode(
     @Body() userAccessData: IPreLogin,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+    @Response() res: Res,
+  ): Promise<Res> {
     const result = await this.appService.auth(userAccessData);
-    response.status(result.status).json(result);
+    console.log(result);
+    return res.status(result.status).json(result);
   }
 
   @Post('authorization')
   @Header('Cache-Control', 'private')
   @Header('Pragma', 'No-cache')
-  async generatejwt(
+  async generateJwt(
     @Body() userAccessData: IAuthorization,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+    @Response() res: Res,
+  ): Promise<Res> {
     const result = await this.appService.authorization(userAccessData);
-    response.status(result.status).json(result);
+    return res.status(result.status).json(result);
   }
 
   //this should be used from resource server to auth own client's actor
@@ -56,10 +46,10 @@ export class AuthorizationAppController {
   @Header('Pragma', 'No-cache')
   async verifyJwt(
     @Body() userAccessData: IverifyAccount,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+    @Response() res: Res,
+  ): Promise<Res> {
     const result = await this.appService.verifyAccount(userAccessData);
-    response
+    return res
       .status(result.res ? HttpStatus.CREATED : HttpStatus.FORBIDDEN)
       .json(result);
   }
